@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./php-sample-application
+    ports:
+      - "8080:80"
+    environment:
+      - DB_HOST=mysql
+      - DB_NAME=sample
+      - DB_USER=sampleuser
+      - DB_PASS=samplepass
+    depends_on:
+      - mysql
+    volumes:
+      - ./php-sample-application:/var/www/html
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+      - MYSQL_DATABASE=sample
+      - MYSQL_USER=sampleuser
+      - MYSQL_PASSWORD=samplepass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./php-sample-application/sql/db.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  mysql_data:
